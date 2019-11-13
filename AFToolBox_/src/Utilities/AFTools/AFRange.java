@@ -26,15 +26,25 @@ import ij.process.ImageStatistics;
 */
 
 /**
+ * This class inherits from AFTool class and implements range algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFRange extends AFTool {
 
+	/**
+	 * Creates a new AFRange.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFRange(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 
+	/**
+	 * Computes the focus value by finding the the difference between highest and lowest pixel values.
+	 */
 	@Override
 	public void runMethod() {
 		ImageStatistics is = ip.getStatistics();

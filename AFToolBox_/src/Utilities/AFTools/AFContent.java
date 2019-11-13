@@ -25,43 +25,36 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements thresholded content algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFContent extends AFTool{
 
+	/**
+	 * Creates a new AFContent.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFContent(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by summing pixel intensities above a threshold.
+	 */
 	@Override
 	protected void runMethod() {		
 		int[][] array = ip.getProcessor().getIntArray();
-		array = thresholdArray(array);
-		ip.getProcessor().setIntArray(array);
-		int[] histogram = ip.getProcessor().getHistogram();
 		val = 0;
-		
-		for(int i=1; i<histogram.length; i++) {
-			
-			val += i*histogram[i];
-		}
-	}
-	
-	private int[][] thresholdArray(int[][] array){
-		int[][] output = new int[height][width];
 		
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
-				if(array[i][j]<threshold) {
-					output[i][j]=0;
-				}else {
-					output[i][j] = array[i][j];
+				if(array[i][j]>=threshold) {
+					val += array[i][j];
 				}
 			}
 		}
-		
-		return output;
 	}
-
 }

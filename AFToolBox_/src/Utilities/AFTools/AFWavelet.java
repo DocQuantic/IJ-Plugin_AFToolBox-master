@@ -25,16 +25,24 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements a wavelet-based algorithms for focus value computation.
+ * This algorithm uses the Daubechies D6 wavelet filter, applying both high pass and low pass filtering to an image. The resultant image is divided into four subimages: LL, HL, LH and HH.
+ * It performs 2D Fast Wavelet Transform (FWT) algorithm with Daubechies 6 wavelets: https://www.mathworks.com/help/wavelet/ug/fast-wavelet-transform-fwt-algorithm.html
  * @author William Magrini @ Bordeaux Imaging Center
- * 
  */
 public class AFWavelet extends AFTool{
 
+	/**Stores the first decomposition step along rows with high pass filter**/
 	protected double[][] cH = null;
+	/**Stores the first decomposition step along rows with low pass filter**/
 	protected double[][] cL = null;
+	/**Stores the coefficients values for row and column high pass filter**/
 	protected double[][] cHH = null;
+	/**Stores the coefficients values for row high pass and column low pass filter**/
 	protected double[][] cHL = null;
+	/**Stores the coefficients values for row low pass and column high pass filter**/
 	protected double[][] cLH = null;
+	/**Stores the Daubechies 6 wavelet low pass decomposition coefficients**/
 	private double[] DecomLoDB6 = {-0.00107730108499558,
 			0.004777257511010651,
 			0.0005538422009938016,
@@ -47,13 +55,24 @@ public class AFWavelet extends AFTool{
 			0.7511339080215775,
 			0.4946238903983854,
 			0.11154074335008017};
+	/**Stores the Daubechies 6 wavelet high pass decomposition coefficients**/
 	private double[] DecomHiDB6 = new double[12];
 
+	/**
+	 * Creates a new AFWavelet and builds the DecomHiDB6 vector.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFWavelet(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 		buildOrthonormalSpace();
 	}
 	
+	/**
+	 * Computes all the coefficients values that will be needed for focus calculation.
+	 * @param array is the input image array (double[][])
+	 */
 	protected void computeCoefficients(double[][] array) {
 		cH = waveletDecom(array, "Hi");
 		cL = waveletDecom(array, "Lo");
@@ -66,6 +85,12 @@ public class AFWavelet extends AFTool{
 		cLH = rotateArrayCCW(cLH);
 	}
 
+	/**
+	 * Performs a 1D FWT on an image.
+	 * @param array is the input image to filter (double[][]).
+	 * @param HiLo "Hi"=High pass filter; "Lo"=Low pass filter (String).
+	 * @return the result of the filtering process.
+	 */
 	private double[][] waveletDecom(double[][] array, String HiLo){
 		double[] wavelet = new double[DecomHiDB6.length];
 		int wavelength = wavelet.length;
@@ -95,6 +120,26 @@ public class AFWavelet extends AFTool{
 		return output;
 	}
 	
+	/**
+	 * Builds the decomposition high pass wavelet coefficients from the decomposition low pass one.
+	 */
+	private void buildOrthonormalSpace() {
+		int wavelength = DecomLoDB6.length;
+		for(int i=0; i<wavelength; i++) {
+			if(i%2==0) {
+				DecomHiDB6[i] = -DecomLoDB6[(wavelength-1)-i];
+			}else {
+				DecomHiDB6[i] = DecomLoDB6[(wavelength-1)-i];
+			}
+		}
+	}
+	
+	/**
+	 * Performs a 1D convolution.
+	 * @param A is the first vector to convolve (double[]).
+	 * @param B is the second vector to convolve (double[]).
+	 * @return the result of the convolution in the form of a vector.
+	 */
 	private double[] conv(double[] A, double[] B) {
 		int m = A.length;
 		int n = B.length;
@@ -112,17 +157,11 @@ public class AFWavelet extends AFTool{
 		return w;
 	}
 	
-	private void buildOrthonormalSpace() {
-		int wavelength = DecomLoDB6.length;
-		for(int i=0; i<wavelength; i++) {
-			if(i%2==0) {
-				DecomHiDB6[i] = -DecomLoDB6[(wavelength-1)-i];
-			}else {
-				DecomHiDB6[i] = DecomLoDB6[(wavelength-1)-i];
-			}
-		}
-	}
-	
+	/**
+	 * Rotates an array clockwise.
+	 * @param array is the array to rotate (double[][]).
+	 * @return the rotated array.
+	 */
 	private double[][] rotateArrayCW(double[][] array){
 		int width = array[0].length;
 		int height = array.length;
@@ -137,6 +176,11 @@ public class AFWavelet extends AFTool{
 		return rotArray;
 	}
 	
+	/**
+	 * Rotates an array counter-clockwise.
+	 * @param array is the array to rotate (double[][]).
+	 * @return the rotated array.
+	 */
 	private double[][] rotateArrayCCW(double[][] array){
 		int width = array[0].length;
 		int height = array.length;

@@ -25,27 +25,36 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements thresholded pixel count algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFCount extends AFTool{
 
+	/**
+	 * Creates a new AFCount.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFCount(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by counting the number of pixels having intensity below the threshold.
+	 */
 	@Override
 	protected void runMethod() {	
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		
-		for(int i=0; i<array.length; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
 				if(array[i][j]<=threshold) {
 					val ++;
 				}
 			}
 		}
 	}
-
 }

@@ -25,31 +25,37 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements standard deviation-based auto-correlation algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFStdBasedAutoCorr extends AFTool {
-	
-	private int surf;
 
+	/**
+	 * Creates a new AFStdBasedAutoCorr.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFStdBasedAutoCorr(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
-		surf = ip.getWidth()*ip.getHeight();
 	}
 	
+	/**
+	 * Computes the focus value by summing the auto-correlation values.
+	 */
 	@Override
 	protected void runMethod() {
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		double mu = ip.getProcessor().getStatistics().mean;
 		
-		for(int i=0; i<array.length-1; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height-1; i++) {
+			for(int j=0; j<width; j++) {
 				val += array[i][j]*array[i+1][j];
 			}
 		}
 		
 		val -= surf*Math.pow(mu, 2);
 	}
-
 }

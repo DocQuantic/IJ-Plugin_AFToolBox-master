@@ -25,26 +25,35 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements auto-correlation algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFAutoCorr extends AFTool{
 
+	/**
+	 * Creates a new AFAutoCorr.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFAutoCorr(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by summing the auto-correlation values.
+	 */
 	@Override
 	protected void runMethod() {
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		
 		
-		for(int i=0; i<array.length-2; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height-2; i++) {
+			for(int j=0; j<width; j++) {
 				val += array[i][j]*array[i+1][j]-array[i][j]*array[i+2][j];
 			}
 		}
 	}
-
 }

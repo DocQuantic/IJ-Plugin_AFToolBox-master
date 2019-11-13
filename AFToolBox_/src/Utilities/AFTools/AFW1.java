@@ -25,15 +25,25 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFWavelet class and implements wavelet algorithm W1.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFW1 extends AFWavelet{
 
+	/**
+	 * Creates a new AFW1.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFW1(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by summing the absolute values in the HL, LH and HH regions.
+	 */
 	@Override
 	protected void runMethod() {		
 		double[][] array = castIntToDouble(ip.getProcessor().getIntArray());
@@ -43,11 +53,10 @@ public class AFW1 extends AFWavelet{
 		int width = cHH[0].length;
 		int height = cHH.length;
 		
-		for(int i=0; i<width;i++) {
-			for(int j=0; j<height; j++) {
+		for(int i=0; i<height;i++) {
+			for(int j=0; j<width; j++) {
 				val += Math.abs(cHL[i][j])+Math.abs(cLH[i][j])+Math.abs(cHH[i][j]);
 			}
 		}
 	}
-
 }

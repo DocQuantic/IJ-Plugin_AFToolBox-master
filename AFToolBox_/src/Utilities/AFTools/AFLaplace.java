@@ -25,17 +25,28 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements sum of modified Laplace algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFLaplace extends AFTool{
 	
+	/**Stores the filter kernel**/
 	private int[] kernel = {0, 1, 0, 1, -4, 1, 0, 1, 0};
 
+	/**
+	 * Creates a new AFLaplace.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFLaplace(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by convolving with Laplacian operator.
+	 */
 	@Override
 	protected void runMethod() {
 		int[][] arrayInit = ip.getProcessor().getIntArray();
@@ -51,5 +62,4 @@ public class AFLaplace extends AFTool{
 		
 		ip.getProcessor().setIntArray(arrayInit);
 	}
-
 }

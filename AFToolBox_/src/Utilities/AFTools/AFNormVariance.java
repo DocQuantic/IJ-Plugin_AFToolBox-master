@@ -26,30 +26,37 @@ import ij.process.ImageStatistics;
 */
 
 /**
+ * This class inherits from AFTool class and implements normalized variance algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFNormVariance extends AFTool{
-
-	private int surf = 0;
 	
+	/**
+	 * Creates a new AFNormVariance.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFNormVariance(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
-		surf = ip.getWidth() * ip.getHeight();
 	}
 	
+	/**
+	 * Computes the focus value by summing the squarred variance of each pixel.
+	 * Normalizes the final output with the mean intensity.
+	 */
 	@Override
 	protected void runMethod() {
 		ImageStatistics is = ip.getProcessor().getStatistics();
 		double mu = is.mean;
 		int[][] array = ip.getProcessor().getIntArray();
 		
-		for(int i=0; i<array.length; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
 				val += Math.pow(array[i][j]-mu, 2);
 			}
 		}
 		val = val/(surf*mu);
 	}
-
 }

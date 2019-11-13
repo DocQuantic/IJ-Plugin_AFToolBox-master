@@ -25,26 +25,37 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements Tenenbaum gradient algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFSobel extends AFTool{
 	
+	/**Stores a copy of the input ImagePlus**/
 	private ImagePlus ipTmp = null;
 
+	/**
+	 * Creates a new AFSobel.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFSobel(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 		ipTmp = ip.duplicate();
 	}
 	
+	/**
+	 * Computes the focus value by convolving with Sobel operator, and summing the square of the gradient vector components.
+	 */
 	@Override
 	protected void runMethod() {
 		ip.getProcessor().findEdges();
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		
-		for(int i=0; i<array.length; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
 				val += array[i][j];
 			}
 		}
@@ -53,5 +64,4 @@ public class AFSobel extends AFTool{
 		ipTmp.copy();
 		ip.paste();
 	}
-
 }

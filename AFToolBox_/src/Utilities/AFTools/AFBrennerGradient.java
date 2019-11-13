@@ -25,23 +25,33 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements Brenner gradient algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFBrennerGradient extends AFTool{
 
+	/**
+	 * Creates a new AFBrennerGradient.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFBrennerGradient(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by calculating the difference between a pixel and its neighbor with a distance of 2.
+	 */
 	@Override
 	protected void runMethod() {
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		double currVal = 0;
 		
-		for(int i=0; i<array.length-2; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height-2; i++) {
+			for(int j=0; j<width; j++) {
 				currVal = Math.pow(array[i+2][j]-array[i][j], 2);
 				if(currVal>=threshold) {
 					val += currVal;
@@ -49,5 +59,4 @@ public class AFBrennerGradient extends AFTool{
 			}
 		}
 	}
-
 }

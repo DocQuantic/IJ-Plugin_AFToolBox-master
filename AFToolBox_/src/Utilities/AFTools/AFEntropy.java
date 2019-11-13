@@ -25,18 +25,25 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements entropy algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFEntropy extends AFTool{
-	
-	private double surf;
 
+	/**
+	 * Creates a new AFEntropy.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFEntropy(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
-		surf=width*height;
 	}
 	
+	/**
+	 * Computes the focus value by calculating the information contained in an image.
+	 */
 	@Override
 	protected void runMethod() {
 		int[] histogram = ip.getProcessor().getHistogram();
@@ -51,10 +58,14 @@ public class AFEntropy extends AFTool{
 		}
 	}
 	
+	/**
+	 * Computes the base 2 logarithm of a value.
+	 * @param num is the input number (double).
+	 * @return the base 2 logarithm of the input.
+	 */
 	private double log2(double num) {
 		num = Math.log(num)/Math.log(2.0);
 		return num;
 	}
-
 }
 

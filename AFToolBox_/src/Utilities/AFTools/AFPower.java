@@ -25,22 +25,32 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements image power algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFPower extends AFTool{
 
+	/**
+	 * Creates a new AFPower.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFPower(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by summing the square of image intensities above a given threshold.
+	 */
 	@Override
 	protected void runMethod() {	
 		int[][] array = ip.getProcessor().getIntArray();
 		val = 0;
 		
-		for(int i=0; i<array.length; i++) {
-			for(int j=0; j<array[0].length; j++) {
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
 				if(array[i][j]>=threshold) {
 					val += Math.pow(array[i][j], 2);
 				}

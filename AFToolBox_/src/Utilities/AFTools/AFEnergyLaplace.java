@@ -25,17 +25,28 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFTool class and implements energy Laplace algorithm.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFEnergyLaplace extends AFTool{
 	
+	/**Stores the filter kernel**/
 	private int[] kernel = {-1, -4, -1, -4, 20, -4, -1, -4, -1};
 
+	/**
+	 * Creates a new AFAutoCorr.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFEnergyLaplace(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by convolving with the kernel {{-1, -4, -1}, {-4, 20, -4}, {-1, -4, -1}} to compute the second derivative. The final output is the sum of the squares of the convolution results.
+	 */
 	@Override
 	protected void runMethod() {
 		int[][] arrayInit = ip.getProcessor().getIntArray();
@@ -51,5 +62,4 @@ public class AFEnergyLaplace extends AFTool{
 
 		ip.getProcessor().setIntArray(arrayInit);
 	}
-
 }

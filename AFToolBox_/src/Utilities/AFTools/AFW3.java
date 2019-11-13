@@ -25,15 +25,25 @@ import ij.measure.ResultsTable;
 */
 
 /**
+ * This class inherits from AFWavelet class and implements wavelet algorithm W3.
  * @author William Magrini @ Bordeaux Imaging Center
  * 
  */
 public class AFW3 extends AFWavelet{
 
+	/**
+	 * Creates a new AFW3.
+	 * @param ip the input ImagePlus containing the stack to analyze.
+	 * @param rt the input ResultsTable to fill with results.
+	 * @param threshold a threshold value that can be used for calculation (int).
+	 */
 	public AFW3(ImagePlus ip, ResultsTable rt, int threshold) {
 		super(ip, rt, threshold);
 	}
 	
+	/**
+	 * Computes the focus value by summing the variances in the HL, LH and HH regions.
+	 */
 	@Override
 	protected void runMethod() {		
 		double[][] array = castIntToDouble(ip.getProcessor().getIntArray());
@@ -47,8 +57,8 @@ public class AFW3 extends AFWavelet{
 		double muHH = mean(cHH);
 		double muLH = mean(cLH);
 		
-		for(int i=0; i<width;i++) {
-			for(int j=0; j<height; j++) {
+		for(int i=0; i<height;i++) {
+			for(int j=0; j<width; j++) {
 				val += Math.pow(Math.abs(cHL[i][j])-muHL, 2) + Math.pow(Math.abs(cLH[i][j])-muLH, 2) + Math.pow(Math.abs(cHH[i][j])-muHH, 2);
 			}
 		}
@@ -56,13 +66,18 @@ public class AFW3 extends AFWavelet{
 		val /= width*height;
 	}
 	
+	/**
+	 * Computes the average value of an array.
+	 * @param array is the input (double[][])
+	 * @return mean(array).
+	 */
 	private double mean(double[][] array) {
 		int width = array[0].length;
 		int height = array.length;
 		double mean = 0;
 		
-		for(int i=0; i<width; i++) {
-			for(int j=0; j<height; j++) {
+		for(int i=0; i<height; i++) {
+			for(int j=0; j<width; j++) {
 				mean += array[i][j];
 			}
 		}
@@ -71,5 +86,4 @@ public class AFW3 extends AFWavelet{
 		
 		return mean;
 	}
-
 }
